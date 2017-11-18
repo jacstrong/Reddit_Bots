@@ -1,3 +1,9 @@
+'''
+I gotta give credit where credit is due.
+The base of this was learned from an amazing tutorial by Shantnu.
+His blog can be found at http://pythonforengineers.com/build-a-reddit-bot-part-1/
+'''
+
 #!/usr/bin/python
 import praw
 import pdb
@@ -25,7 +31,7 @@ else:
 
 git_commands_set = ("add","am","archive","bisect","branch","bundle","checkout","cherry-pick","citool","clean","clone","commit","describe","diff","fetch","format-patch","gc","grep","gui","init","log","merge","mv","notes","pull","push","rebase","reset","revert","rm","shortlog","show","stash","status","submodule","tag","worktree")
 
-# Get the top 5 values from our subreddi
+# Get the top 5 values from our subreddit
 def checkcommands(subreddit):
 	print("commands called")
 	for submission in subreddit.hot(limit=10):
@@ -40,22 +46,20 @@ def checkcommands(subreddit):
 		    # Reply to the post
 	            if command.group(1) not in git_commands_set:
 			    submission.reply("git: " + command.group(1) + " is not a git command. See \'git --help\'.")
-			    print("Bot replying to : ", submission.title)
+                            print("Bot replying to : ", submission.title, "::", submission.id)
 
 		    # Store the current id into our list
 		    posts_replied_to.append(submission.id)
 
-print("something here...")
-subreddit = reddit.subreddit('HackUSU2017')
+subreddit = reddit.subreddit('HackUSU2017+learnpython')
+'''
 try:
-	checkcommands(subreddit)
+    checkcommands(subreddit)
 except:
-	pass
-
-print("first worked")
-subreddit = reddit.subreddit('pythonforengineers')
-checkcommands(subreddit)
-print("secondworked")
+    print("rejected")
+    pass
+'''
+subreddit.SubredditStream.comments()
 
 # Write our updated list back to the file
 with open("posts_replied_to.txt", "w") as f:
