@@ -63,7 +63,7 @@ def checkcommands(subreddit):
 		    # Store the current id into our list
 		    posts_replied_to.append(submission.id)
 
-        for submission in subreddit.hot(limit=4):
+        for submission in subreddit.hot(limit=10):
             submission.comments.replace_more(limit=0)
             comment_queue = submission.comments[:]
             while comment_queue:
@@ -82,7 +82,7 @@ def checkcommands(subreddit):
                 comments_replied_to.append(comment.id)
                 comment_queue.extend(comment.replies)
 
-subreddit = reddit.subreddit('HackUSU2017')
+subreddit = reddit.subreddit('HackUSU2017+pythonforengineers')
 
 try:
     checkcommands(subreddit)
