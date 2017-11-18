@@ -59,7 +59,7 @@ except:
     print("rejected")
     pass
 '''
-subreddit.SubredditStream.comments()
+subreddit.comments
 
 # Write our updated list back to the file
 with open("posts_replied_to.txt", "w") as f:
