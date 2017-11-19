@@ -42,14 +42,14 @@ git_commands_set = ("add","am","archive","bisect","branch","bundle","checkout","
 # Get the top 5 values fr"om our subreddit
 def checkcommands(subreddit):
 	print("commands called")
-	for submission in subreddit.hot(limit=10):
+	for submission in subreddit.hot(limit=100):
 	    #print(submission.title)
 
 	    # If we haven't replied to this post before
 	    if submission.id not in posts_replied_to:
-
-		# Do a case insensitive search
-		if re.search("git ", submission.title, re.IGNORECASE):
+                print('r/' + submission.title)
+                # Do a case insensitive sea:rch
+		if re.search(r'\b' + 'git ', submission.title, re.IGNORECASE):
 	            command = re.search('git\s(\w+)',submission.title, re.IGNORECASE)
 		    # Reply to the post
 	            if command.group(1) not in git_commands_set:
@@ -60,16 +60,17 @@ def checkcommands(subreddit):
                             print('S comment rejected: ' + str(e))
                             pass
 
-		    # Store the current id into our list
+                    # Store the current id into our list
 		    posts_replied_to.append(submission.id)
 
-        for submission in subreddit.hot(limit=10):
+        for submission in subreddit.hot(limit=100):
+            print('r/' + submission.title + '/comments -+-+-+-+-+-+-')
             submission.comments.replace_more(limit=0)
             comment_queue = submission.comments[:]
             while comment_queue:
                 comment = comment_queue.pop(0)
                 if comment.id not in comments_replied_to:
-                    if re.search("git ", comment.body, re.IGNORECASE):
+                    if re.search(" git ", comment.body, re.IGNORECASE):
 	                command = re.search('git\s(\w+)', comment.body, re.IGNORECASE)
 		        # Reply to the post
 	                if command.group(1) not in git_commands_set:
@@ -82,8 +83,7 @@ def checkcommands(subreddit):
                 comments_replied_to.append(comment.id)
                 comment_queue.extend(comment.replies)
 
-subreddit = reddit.subreddit('HackUSU2017+pythonforengineers')
-
+subreddit = reddit.subreddit('HackUSU2017+pythonforengineers+all+gaming')
 try:
     checkcommands(subreddit)
     print("completed")
