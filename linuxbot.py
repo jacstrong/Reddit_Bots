@@ -42,54 +42,66 @@ git_commands_set = ("add","am","archive","bisect","branch","bundle","checkout","
 # Get the top 5 values fr"om our subreddit
 def checkcommands(subreddit):
 	print("commands called")
-	for submission in subreddit.hot(limit=100):
+        comment_count = 0;
+        for submission in subreddit.hot(limit=100):
 	    #print(submission.title)
 
 	    # If we haven't replied to this post before
 	    if submission.id not in posts_replied_to:
-                print('r/' + submission.title)
+                #try:
+                    #print('**/')
+                #except:
+                    #pass
                 # Do a case insensitive sea:rch
-		if re.search(r'\b' + 'git ', submission.title, re.IGNORECASE):
-	            command = re.search('git\s(\w+)',submission.title, re.IGNORECASE)
-		    # Reply to the post
-	            if command.group(1) not in git_commands_set:
-                        try:   
-                            submission.reply("####`git: \'" + command.group(1) + "\' is not a git command. See \'git --help\'.`")
-                            print("Bot replying to : ", submission.title, "::", submission.id)
-                        except Exception, e:
-                            print('S comment rejected: ' + str(e))
-                            pass
+                try:
+		    if re.search(r'\b' + 'git ', submission.title, re.IGNORECASE):
+	                command = re.search('git\s(\w+)',submission.title, re.IGNORECASE)
+		        # Reply to the post
+	                if command.group(1) not in git_commands_set:
+                            try:   
+                                submission.reply("####`git: \'" + command.group(1) + "\' is not a git command. See \'git --help\'.`")
+                                print("Bot replying to : ", submission.title, "::", submission.id)
+                            except Exception, e:
+                                print('S comment rejected: ' + str(e))
+                                pass
 
-                    # Store the current id into our list
-		    posts_replied_to.append(submission.id)
+                        # Store the current id into our list
+		        posts_replied_to.append(submission.id)
+
+                except:
+                    pass
 
         for submission in subreddit.hot(limit=100):
-            print('r/' + submission.title + '/comments -+-+-+-+-+-+-')
+            comment_count = comment_count + 1;
+            print(str(comment_count) + '**/r' + submission.title + '/comments -+-+-+-+-+-+-')
             submission.comments.replace_more(limit=0)
             comment_queue = submission.comments[:]
             while comment_queue:
                 comment = comment_queue.pop(0)
                 if comment.id not in comments_replied_to:
-                    if re.search(" git ", comment.body, re.IGNORECASE):
+                    if re.search(r'\b' + 'git ', comment.body, re.IGNORECASE):
 	                command = re.search('git\s(\w+)', comment.body, re.IGNORECASE)
 		        # Reply to the post
-	                if command.group(1) not in git_commands_set:
-                            try:
-			        comment.reply("####`git: \'" + command.group(1) + "\' is not a git command. See \'git --help\'.`")
-                                print("Bot replying to comment: ", comment.body, "::", submission.id,"::",comment.id)
-                            except Exception, e:
-                                print('Comment rejected: ' + str(e))
-                                pass
+                        if command.group(1) is None:
+                            print('nonetype')
+                        else:
+	                    if command.group(1) not in git_commands_set:
+                                try:
+                                    comment.reply("####`git: \'" + command.group(1) + "\' is not a git command. See \'git --help\'.`")
+                                    print("Bot replying to comment: ", comment.body, "::", submission.id,"::",comment.id)
+                                except Exception, e:
+                                    print('Comment rejected: ', str(e))
+                                    pass
                 comments_replied_to.append(comment.id)
                 comment_queue.extend(comment.replies)
 
-subreddit = reddit.subreddit('HackUSU2017+pythonforengineers+all+gaming')
-try:
-    checkcommands(subreddit)
-    print("completed")
-except:
-    print("rejected")
-    pass
+subreddit = reddit.subreddit('HackUSU2017')
+#try:
+checkcommands(subreddit)
+print("completed")
+#except:
+#    print("rejected")
+#    pass
 
 # Write our updated list back to the file
 with open("posts_replied_to.txt", "w") as f:
